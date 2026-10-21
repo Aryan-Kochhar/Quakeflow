@@ -1,0 +1,14 @@
+services:
+  pipeline:
+    build: .
+    command: ["quakeflow", "run"]
+    volumes: ["./data:/app/data"]
+
+  dashboard:
+    build: .
+    command: ["streamlit", "run", "dashboard/app.py", "--server.address=0.0.0.0"]
+    ports: ["8501:8501"]
+    volumes: ["./data:/app/data"]
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully

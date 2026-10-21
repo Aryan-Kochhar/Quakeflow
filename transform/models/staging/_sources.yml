@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Validated events loaded by the Python ingestion layer.
+    tables:
+      - name: usgs_events
+        description: One row per USGS event id, holding its latest known revision.
+        loaded_at_field: ingested_at
+        freshness:
+          warn_after: {count: 1, period: day}
+          error_after: {count: 3, period: day}
+        columns:
+          - name: event_id
+            data_tests: [unique, not_null]
+      - name: pipeline_runs
+        description: Audit log of every ingestion run.

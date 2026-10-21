@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: fct_earthquakes
+    description: One row per earthquake with a magnitude, enriched with bands and energy release.
+    columns:
+      - name: event_id
+        data_tests: [unique, not_null]
+      - name: magnitude
+        data_tests:
+          - not_null
+          - value_between:
+              arguments: {min_value: -2, max_value: 10}
+      - name: magnitude_band
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["micro", "minor", "light", "moderate", "strong", "major", "great"]
+      - name: depth_class
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["shallow", "intermediate", "deep"]
+      - name: energy_joules
+        data_tests: [not_null]
+
+  - name: mart_daily_activity
+    description: Daily earthquake counts, magnitudes and total energy released.
+    columns:
+      - name: event_date
+        data_tests: [unique, not_null]
+
+  - name: mart_region_activity
+    description: Per-region activity ranked by total energy released.
+    columns:
+      - name: region
+        data_tests: [unique, not_null]
+      - name: energy_share_pct
+        data_tests:
+          - value_between:
+              arguments: {min_value: 0, max_value: 100}

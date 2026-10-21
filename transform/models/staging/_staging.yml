@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_usgs__events
+    description: Cleaned, renamed USGS events (all event types) with a normalised region.
+    columns:
+      - name: event_id
+        data_tests: [unique, not_null]
+      - name: event_time
+        data_tests: [not_null]
+      - name: latitude
+        data_tests:
+          - not_null
+          - value_between:
+              arguments: {min_value: -90, max_value: 90}
+      - name: longitude
+        data_tests:
+          - not_null
+          - value_between:
+              arguments: {min_value: -180, max_value: 180}
+      - name: review_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["automatic", "reviewed", "deleted"]
+              config: {severity: warn}
